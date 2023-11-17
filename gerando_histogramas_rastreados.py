@@ -5,12 +5,13 @@ import cv2  # Importa a biblioteca OpenCV para manipulação de imagens
 # Carregar o modelo YOLO
 model = YOLO('yolov8m.pt')  # Carrega o modelo YOLOv8m
 
-# Realizar a detecção na imagem de teste
-results = model(
+# Realizar o rastreamento na imagem de teste
+results = model.track(
     source='C:/Users/rodri/Desktop/TCC/imagem_teste.jpg',  # Define a imagem de entrada
     show=True,  # Exibe a imagem com as detecções
     save=True,  # Salva a imagem com as detecções
     save_dir='C:/Users/rodri/Desktop/TCC/',  # Define o diretório onde a imagem será salva
+    tracker='bytetrack.yaml',  # Define o algoritmo de rastreamento a ser usado
     classes=(2, 3, 5, 7)  # Define as classes a serem detectadas
 )
 
