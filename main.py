@@ -51,6 +51,12 @@ def create_run_folder(base_folder='resultados'):
     os.makedirs(run_path)
     return run_path
 
+# Função para salvar resultados de comparação de distâncias de Hellinger em um arquivo de texto
+def save_hellinger_results(run_path, results):
+    output_file = os.path.join(run_path, 'results.txt')
+    with open(output_file, 'w') as file:
+        for result in results:
+            file.write(result + '\n')
 
 # Carregar o modelo YOLO
 model = YOLO('yolov8m.pt')  # Carrega o modelo YOLOv8m
@@ -67,10 +73,10 @@ results_frame1 = model(source=frame1_path, classes=(2, 5, 7))  # Carros, ônibus
 results_frame2 = model(source=frame2_path, classes=(2, 5, 7))
 
 # Carregar as imagens
-image1 = cv2.imread(frame1_path)  #formato BGR
-image2 = cv2.imread(frame2_path)  #formato BGR
+image1 = cv2.imread(frame1_path)  # Formato BGR
+image2 = cv2.imread(frame2_path)  # Formato BGR
 
-# Converter para RGB somente para exibição com Matplotlib (se necessário)
+# Converter para RGB somente para exibição
 image1_rgb = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 image2_rgb = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)
 
@@ -114,7 +120,8 @@ for i, result in enumerate(results_frame2):  # Para cada veículo detectado no f
         plt.title(f'Veículo {j+1} - Frame 2')
         plt.savefig(os.path.join(run_folder, f'hist_frame2_vehicle_{j+1}.png'))  # Salva o histograma
 
-# Comparar histogramas entre o frame 1 e o frame 2
+# Comparar histogramas entre o frame 1 e o frame 2 e salvar em arquivo
+hellinger_results = []
 for idx1, hist1 in histograms_frame1.items():
     for idx2, hist2 in histograms_frame2.items():
         distances = []
@@ -122,4 +129,8 @@ for idx1, hist1 in histograms_frame1.items():
             dist = hellinger_distance(hist1[ch], hist2[ch])
             distances.append(dist)
         avg_distance = np.mean(distances)  # Calcula a média das distâncias dos canais
-        print(f'Distância de Hellinger entre o veículo {idx1+1} no Frame 1 e o veículo {idx2+1} no Frame 2: {avg_distance}')
+        result = f'Distância de Hellinger entre o veículo {idx1+1} no Frame 1 e o veículo {idx2+1} no Frame 2: {avg_distance}'
+        hellinger_results.append(result)
+
+# Salvar os resultados no arquivo results.txt
+save_hellinger_results(run_folder, hellinger_results)
