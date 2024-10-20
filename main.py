@@ -23,7 +23,7 @@ def hellinger_distance(hist1, hist2):
     return hellinger
 
 # Função para gerar o histograma de uma ROI (Região de Interesse)
-def calc_histogram(roi):
+def generate_histogram(roi):
     color = ('b', 'g', 'r')  # Cores para canais RGB
     histograms = []
     
@@ -76,7 +76,7 @@ results_frame2 = model(source=frame2_path, classes=(2, 5, 7))
 image1 = cv2.imread(frame1_path)  # Formato BGR
 image2 = cv2.imread(frame2_path)  # Formato BGR
 
-# Converter para RGB somente para exibição
+# Converter para RGB
 image1_rgb = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
 image2_rgb = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)
 
@@ -97,7 +97,7 @@ for i, result in enumerate(results_frame1):  # Para cada veículo detectado no f
     for j, box in enumerate(boxes):  # Para cada caixa delimitadora
         x1, y1, x2, y2 = map(int, box)
         roi = image1[y1:y2, x1:x2]  # Região de interesse do veículo
-        histograms_frame1[j] = calc_histogram(roi)  # Calcula e armazena o histograma
+        histograms_frame1[j] = generate_histogram(roi)  # Calcula e armazena o histograma
         plt.figure()
         for k, hist in enumerate(histograms_frame1[j]):  # Plota os histogramas
             plt.plot(hist, color=('b', 'g', 'r')[k])
@@ -113,7 +113,7 @@ for i, result in enumerate(results_frame2):  # Para cada veículo detectado no f
     for j, box in enumerate(boxes):  # Para cada caixa delimitadora
         x1, y1, x2, y2 = map(int, box)
         roi = image2[y1:y2, x1:x2]  # Região de interesse do veículo
-        histograms_frame2[j] = calc_histogram(roi)  # Calcula e armazena o histograma
+        histograms_frame2[j] = generate_histogram(roi)  # Calcula e armazena o histograma
         plt.figure()
         for k, hist in enumerate(histograms_frame2[j]):  # Plota os histogramas
             plt.plot(hist, color=('b', 'g', 'r')[k])
