@@ -4,22 +4,16 @@ import matplotlib.pyplot as plt  # Importa a biblioteca matplotlib para a criaç
 import cv2  # Importa a biblioteca OpenCV para manipulação de imagens
 import numpy as np  # Biblioteca para manipulação numérica
 
-# Função para calcular o coeficiente de Bhattacharyya (BC)
-def bhattacharyya_coefficient(hist1, hist2):
-    bc = np.sqrt(hist1 * hist2)
+def bhattacharyya_coefficient(hist1, hist2): # Função para calcular o coeficiente de Bhattacharyya (BC)
+    bc = np.sum(np.sqrt(hist1 * hist2)) # Soma a raiz quadrada do produto dos histogramas normalizados
+    bc = np.clip(bc, 0, 1) # Garantir que o valor esteja no intervalo [0, 1]
     return bc
 
-# Função para calcular a distância de Hellinger usando o coeficiente de Bhattacharyya
 def hellinger_distance(hist1, hist2):
-    # Normaliza os histogramas
-    hist1 = cv2.normalize(hist1, hist1).flatten()
-    hist2 = cv2.normalize(hist2, hist2).flatten()
-
-    # Calcula o coeficiente de Bhattacharyya
-    bc = bhattacharyya_coefficient(hist1, hist2)
-    
-    # Calcula a distância de Hellinger usando a fórmula: H(P, Q) = sqrt(1 - BC(P, Q))
-    hellinger = np.sqrt(1 - bc)
+    hist1 = hist1 / (np.sum(hist1) + 1e-6)  # Normaliza os histogramas manualmente para o intervalo [0, 1]
+    hist2 = hist2 / (np.sum(hist2) + 1e-6) # Evita divisão por zero
+    bc = bhattacharyya_coefficient(hist1, hist2) # Calcula o coeficiente de Bhattacharyya
+    hellinger = np.sqrt(1 - bc) # Calcula a distância de Hellinger usando a fórmula: H(P, Q) = sqrt(1 - BC(P, Q))
     return hellinger
 
 # Função para gerar o histograma de uma ROI (Região de Interesse)
