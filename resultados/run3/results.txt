@@ -1,0 +1,9 @@
+Distância de Hellinger entre o veículo 1 no Frame 1 e o veículo 1 no Frame 2: 0.09049208074001706
+Distância de Hellinger entre o veículo 1 no Frame 1 e o veículo 2 no Frame 2: 0.2512886979632068
+Distância de Hellinger entre o veículo 1 no Frame 1 e o veículo 3 no Frame 2: 0.3704577864653486
+Distância de Hellinger entre o veículo 2 no Frame 1 e o veículo 1 no Frame 2: 0.2547129885715746
+Distância de Hellinger entre o veículo 2 no Frame 1 e o veículo 2 no Frame 2: 0.07795385127333196
+Distância de Hellinger entre o veículo 2 no Frame 1 e o veículo 3 no Frame 2: 0.4035041055274493
+Distância de Hellinger entre o veículo 3 no Frame 1 e o veículo 1 no Frame 2: 0.35154726268411257
+Distância de Hellinger entre o veículo 3 no Frame 1 e o veículo 2 no Frame 2: 0.38388654747254153
+Distância de Hellinger entre o veículo 3 no Frame 1 e o veículo 3 no Frame 2: 0.18820010877647372
