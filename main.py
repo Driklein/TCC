@@ -25,6 +25,7 @@ def generate_histogram(roi):
     for j, col in enumerate(color):
         hist = cv2.calcHist([roi], [j], None, [256], [0, 256])  # Calcula o histograma para cada canal de cor
         histograms.append(hist)
+
     return histograms
 
 # Função que salva uma imagem com retângulos e numeração nos veículos detectados
@@ -54,7 +55,7 @@ def save_hellinger_results(run_path, results):
             file.write(result + '\n')  # Escreve cada resultado em uma linha no arquivo
 
 # Define o caminho da pasta que contém as imagens
-folder_path = 'C:/Users/rodri/Desktop/TCC/imagens_tempo_chuvoso'
+folder_path = 'C:/Users/rodri/Desktop/TCC/imagens_tempo_aberto'
 
 # Lista e ordena os arquivos de imagem, selecionando apenas os frames pares
 all_frames = sorted([f for f in os.listdir(folder_path) if f.endswith('.jpg')])
@@ -119,7 +120,7 @@ for i in range(len(even_frames) - 1):
     hellinger_results = []
     for idx1, hist1 in histograms_frame1.items():
         for idx2, hist2 in histograms_frame2.items():
-            distances = [hellinger_distance(hist1[ch], hist2[ch]) for ch in range(3)]  # Distância de Hellinger para cada canal de cor
+            distances = [hellinger_distance(hist1[channel], hist2[channel]) for channel in range(3)]  # Distância de Hellinger para cada canal de cor
             avg_distance = np.mean(distances)  # Média das distâncias entre os canais
             result = f'Distância de Hellinger entre o veículo {idx1+1} no Frame 1 e o veículo {idx2+1} no Frame 2: {avg_distance}'
             hellinger_results.append(result)
@@ -133,7 +134,7 @@ for i in range(len(even_frames) - 1):
         min_distance = float('inf')
         min_index = -1
         for idx2, hist2 in histograms_frame2.items():
-            distances = [hellinger_distance(hist1[ch], hist2[ch]) for ch in range(3)]
+            distances = [hellinger_distance(hist1[channel], hist2[channel]) for channel in range(3)]
             avg_distance = np.mean(distances)
             if avg_distance < min_distance:  # Atualiza a menor distância e o índice correspondente
                 min_distance = avg_distance
