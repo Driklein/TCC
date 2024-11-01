@@ -34,7 +34,7 @@ def save_vehicles_with_enumeration(image, boxes, enumeration_map, frame_number, 
         vehicle_num = enumeration_map[idx] + 1  # Atribui o número de identificação do veículo
         x1, y1, x2, y2 = map(int, box)  # Converte as coordenadas da caixa delimitadora em inteiros
         cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)  # Desenha um retângulo ao redor do veículo
-        cv2.putText(image, f'Veiculo {vehicle_num}', (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)  # Adiciona o texto
+        cv2.putText(image, f'V{vehicle_num}', (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)  # Adiciona o texto
     output_path = os.path.join(run_path, f'detected_frame_{frame_number}.jpg')  # Define o caminho de saída
     cv2.imwrite(output_path, image)  # Salva a imagem
 
@@ -55,7 +55,7 @@ def save_hellinger_results(run_path, results):
             file.write(result + '\n')  # Escreve cada resultado em uma linha no arquivo
 
 # Define o caminho da pasta que contém as imagens
-folder_path = 'C:/Users/rodri/Desktop/TCC/imagens_tempo_aberto'
+folder_path = 'C:/Users/rodri/Desktop/TCC/imagens_tempo_diurno_2'
 
 # Lista e ordena os arquivos de imagem, selecionando apenas os frames pares
 all_frames = sorted([f for f in os.listdir(folder_path) if f.endswith('.jpg')])
