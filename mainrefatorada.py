@@ -57,7 +57,7 @@ def main():
         veiculos_detectados_proximo_quadro = model(source=diretorio_proximo_quadro, classes=(2, 5, 7))
 
         #Armazena os histogramas dos veículos detectados em cada quadro
-        histogramas_atual_quadro = gerar_histogramas_dos_veiculos_de_um_quadro(diretorio_atual_quadro, veiculos_detectados_atual_quadro) #Implemente a função
+        histogramas_atual_quadro = gerar_histogramas_dos_veiculos_de_um_quadro(diretorio_atual_quadro, veiculos_detectados_atual_quadro) #Implementar a função
         histogramas_proximo_quadro = gerar_histogramas_dos_veiculos_de_um_quadro(diretorio_proximo_quadro, veiculos_detectados_proximo_quadro) 
 
         #Variáveis a serem utilizadas
@@ -70,7 +70,7 @@ def main():
             
             #Realizar a comparação do histograma_atual com todos os histogramas gerados no próximo quadro (histogramas_proximo_quadro) utilizando o método da distância de hellinger (usando o coeficiente de bhattacharyya) já implementado (ao se tratar do último quadro, não realizar a comparação pois não existirá próximo quadro).
             for histograma_proximo in histogramas_proximo_quadro:
-                distancia_entre_histograma_atual_e_proximo = calcula_distancia_entre_dois_histogramas(histograma_atual, histograma_proximo) #Implemente a função
+                distancia_entre_histograma_atual_e_proximo = calcula_distancia_entre_dois_histogramas(histograma_atual, histograma_proximo) #Implementar a função
 
                 if(distancia_entre_histograma_atual_e_proximo < menor_distancia):
                     menor_distancia = distancia_entre_histograma_atual_e_proximo
