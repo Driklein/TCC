@@ -1,13 +1,13 @@
 Com base na pasta contendo os quadros:
 
-1. Gere os histogramas dos veículos detectados no frame atual.
+1. Gerar os histogramas dos veículos detectados no quadro atual.
 
-2. Gere os histogramas dos veículos detectados do próximo frame (ao se tratar do último frame, não gerar pois não existirá próximo frame).
+2. Gerar os histogramas dos veículos detectados do próximo quadro (ao se tratar do último quadro, não gerar pois não existirá próximo quadro).
 
-3. Para cada histograma gerado no frame atual, faça a comparação com todos os histogramas gerados no próximo frame com o método da distância de hellinger (usando o coeficiente de bhattacharyya) já implementado (ao se tratar do último frame, não realizar a comparação pois não existirá próximo frame).
+3. Para cada histograma gerado no quadro atual, fazer a comparação com todos os histogramas gerados no próximo quadro com o método da distância de hellinger (usando o coeficiente de bhattacharyya) já implementado (ao se tratar do último quadro, não realizar a comparação pois não existirá próximo quadro).
 
-4. Para cada histograma do frame atual comparado com todos histogramas do próximo frame, atribuir o mesmo número para os dois veículos em ambos os frames cujos histogramas resultaram na menor distância, para identificá-lo, ex: V1, V2, etc (caso o veículo do histograma já estiver com uma enumeração de comparações anteriores, mantenha o mesmo número para a próxima comparação que obtiver a menor distância novamente.
+4. Para cada histograma do quadro atual comparado com todos histogramas do próximo quadro, atribuir o mesmo número para os dois veículos em ambos os quadros cujos histogramas resultaram na menor distância, para identificá-lo, ex: V1, V2, etc (caso o veículo do histograma já estiver com uma enumeração de comparações anteriores, manter o mesmo número para a próxima comparação que obtiver a menor distância novamente.
 
 5. Plotar todos os histogramas gerados na pasta resultados/run"(numero da run)"/histogramas
 
-5. Plotar o frame atual com os veículos enumerados na pasta resultados/run"(numero da run)" com nome de frame"(numero da comparação)".jpg
+5. Plotar o quadro atual com os veículos enumerados na pasta resultados/run"(numero da run)" com nome de quadro"(numero da comparação)".jpg
