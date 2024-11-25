@@ -1,0 +1,35 @@
+
+
+
+int main():
+
+	#Com base na pasta contendo os quadros:
+	quadros = quadros_pares_da_pasta
+
+	for quadro in quadros:
+
+		histogramas_veiculos_atual_quadro = gerar_histogramas_de_veiculos_de_um_quadro(quadro)
+		histogramas_veiculos_proximo_quadro = gerar_histogramas_de_veiculos_de_um_quadro(quadros[quadro+1])
+
+		for histograma_atual in histogramas_veiculos_atual_quadro:
+			
+			menor_distancia = float('inf')
+			histograma_semelhante_ao_atual = None
+			coordenada_histograma_atual = retorna_coordenada_de_um_histograma(histograma_atual)
+			coordenada_histograma_semelhante = None
+
+			for histograma_proximo in histogramas_veiculos_proximo_quadro:
+				coordenada_histograma_proximo = retorna_coordenada_de_um_histograma(histograma_proximo)
+
+				distancia = distancia_de_hellinger(histograma_atual, histograma_proximo)
+
+				if distancia < menor_distancia:
+						menor_distancia = distancia
+						histograma_semelhante_ao_atual = histograma_proximo
+						
+			coordenada_histograma_semelhante = retorna_coordenada_de_um_histograma(histograma_semelhante_ao_atual)
+
+			salva_histograma_atual_e_seu_semelhante_em_uma_pasta(histograma_atual, histograma_semelhante_ao_atual)
+			enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(quadro, coordenada_histograma_atual, coordenada_histograma_semelhante)
+
+	salva_quadro_atual_com_veiculos_rastreados
