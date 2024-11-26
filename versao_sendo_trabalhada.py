@@ -139,10 +139,10 @@ def processar_quadros(model, quadros, pasta_quadros, pasta_run):
                 distancia_media = (distancia_r + distancia_g + distancia_b) / 3
 
                 if distancia_media < menor_distancia:
+                    histograma_proximo[7] = id_atual
                     menor_distancia = distancia_media
                     histograma_semelhante = histograma_proximo
                     coordenada_semelhante = coordenada_proximo
-                    id_proximo = id_atual
 
             # Salvar histogramas
             salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelhante, id_proximo, numero_quadro, pasta_run)
