@@ -31,25 +31,22 @@ def distancia_de_hellinger(hist1, hist2):
 # Função para gerar histogramas dos veículos detectados em um quadro
 def gerar_histogramas_de_veiculos_de_um_quadro(img, deteccoes):
     histogramas_com_coordenadas = []
-    id_rotulo = 0
-
     if deteccoes and hasattr(deteccoes[0], 'boxes'):
         for det in deteccoes[0].boxes:
-            id_rotulo = id_rotulo + 1
             x1, y1, x2, y2 = map(int, det.xyxy[0])
             veiculo = img[y1:y2, x1:x2]
             hist_r = cv2.calcHist([veiculo], [0], None, [256], [0, 256])
             hist_g = cv2.calcHist([veiculo], [1], None, [256], [0, 256])
             hist_b = cv2.calcHist([veiculo], [2], None, [256], [0, 256])
-            histogramas_com_coordenadas.append(([hist_r, hist_g, hist_b], (x1, y1, x2, y2), id_rotulo))
+            histogramas_com_coordenadas.append(([hist_r, hist_g, hist_b], (x1, y1, x2, y2)))
     return histogramas_com_coordenadas
 
 # Função para salvar histogramas dos canais R, G e B em arquivos separados
-def salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelhante, id_atual, id_semelhante, numero_quadro, pasta_run):
+def salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelhante, numero_veiculo, numero_quadro, pasta_run):
     # Criar pasta para o quadro atual
     pasta_quadro_atual = os.path.join(pasta_run, f"quadro_{numero_quadro}")
     # Criar pasta específica para os histogramas do veículo
-    pasta_histograma = os.path.join(pasta_quadro_atual, f"histogramas_semelhantes_{id_atual}_{id_semelhante}")
+    pasta_histograma = os.path.join(pasta_quadro_atual, f"histogramas_semelhantes_{numero_veiculo}")
     os.makedirs(pasta_histograma, exist_ok=True)
     
     # Salvar histograma atual
@@ -57,8 +54,8 @@ def salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelha
     for canal, cor in zip(range(3), ['r', 'g', 'b']):
         plt.plot(histograma_atual[canal], color=cor, label=f"Atual - {cor.upper()}")
     plt.legend()
-    plt.title(f"Histograma Atual - Veículo {id_atual}")
-    plt.savefig(os.path.join(pasta_histograma, f"atual_{id_atual}.png"))
+    plt.title(f"Histograma Atual - Veículo {numero_veiculo}")
+    plt.savefig(os.path.join(pasta_histograma, f"atual_{numero_veiculo}.png"))
     plt.close()
 
     # Salvar histograma semelhante
@@ -66,18 +63,19 @@ def salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelha
     for canal, cor in zip(range(3), ['r', 'g', 'b']):
         plt.plot(histograma_semelhante[canal], color=cor, label=f"Semelhante - {cor.upper()}")
     plt.legend()
-    plt.title(f"Histograma Semelhante - Veículo {id_semelhante}")
-    plt.savefig(os.path.join(pasta_histograma, f"semelhante_{id_semelhante}.png"))
+    plt.title(f"Histograma Semelhante - Veículo {numero_veiculo}")
+    plt.savefig(os.path.join(pasta_histograma, f"semelhante_{numero_veiculo}.png"))
     plt.close()
 
+
 # Função para desenhar retângulos e números nos veículos detectados
-def enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(img_atual, img_proximo, coordenada_atual, coordenada_semelhante, id_atual, id_semelhante):
+def enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(img_atual, img_proximo, coordenada_atual, coordenada_semelhante, numero_veiculo, pasta_run):
     # Desenhar no quadro atual
     x1, y1, x2, y2 = coordenada_atual
     cv2.rectangle(img_atual, (x1, y1), (x2, y2), (0, 255, 0), 2) 
     cv2.putText(
         img_atual, 
-        f"{id_atual}", 
+        f"{numero_veiculo}", 
         (x1, y1 - 10), 
         cv2.FONT_HERSHEY_SIMPLEX, 
         0.9, 
@@ -90,14 +88,14 @@ def enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(img_atual, img_pro
     cv2.rectangle(img_proximo, (x1, y1), (x2, y2), (0, 255, 0), 2)  
     cv2.putText(
         img_proximo, 
-        f"{id_semelhante}", 
+        f"{numero_veiculo}", 
         (x1, y1 - 10), 
         cv2.FONT_HERSHEY_SIMPLEX, 
         0.9, 
         (255, 0, 0), 
         2
     )
-    
+
 # Função para salvar o quadro atual com as detecções realizadas
 def salva_quadro_atual_com_deteccoes_realizadas(img_atual, numero_quadro, pasta_run):
     # Caminho para salvar o quadro
@@ -105,32 +103,25 @@ def salva_quadro_atual_com_deteccoes_realizadas(img_atual, numero_quadro, pasta_
     cv2.imwrite(caminho_quadro, img_atual)
 
 def processar_quadros(model, quadros, pasta_quadros, pasta_run):
-
-    quadro_atual = os.path.join(pasta_quadros, quadros[0])
-    img_atual = cv2.imread(quadro_atual)
-
-    deteccoes_atual = model(source=quadro_atual, classes=(2, 5, 7))
-    histogramas_atuais = gerar_histogramas_de_veiculos_de_um_quadro(img_atual, deteccoes_atual)
-
     for i in range(len(quadros) - 1):
+        quadro_atual = os.path.join(pasta_quadros, quadros[i])
+        quadro_proximo = os.path.join(pasta_quadros, quadros[i + 1])
+        img_atual = cv2.imread(quadro_atual)
+        img_proximo = cv2.imread(quadro_proximo)
+
+        deteccoes_atual = model(source=quadro_atual, classes=(2, 5, 7))
+        deteccoes_proximo = model(source=quadro_proximo, classes=(2, 5, 7))
+
+        histogramas_atual = gerar_histogramas_de_veiculos_de_um_quadro(img_atual, deteccoes_atual)
+        histogramas_proximo = gerar_histogramas_de_veiculos_de_um_quadro(img_proximo, deteccoes_proximo)
 
         numero_quadro = i + 1
-
-        quadro_atual = os.path.join(pasta_quadros, quadros[i])
-        img_atual = cv2.imread(quadro_atual)
-        
-        quadro_proximo = os.path.join(pasta_quadros, quadros[i + 1])
-        img_proximo = cv2.imread(quadro_proximo)
-        deteccoes_proximo = model(source=quadro_proximo, classes=(2, 5, 7))
-        
-        histogramas_proximos = gerar_histogramas_de_veiculos_de_um_quadro(img_proximo, deteccoes_proximo)
-
-        for histograma_atual, coordenada_atual, id_atual  in histogramas_atuais:
+        for numero_veiculo, (histograma_atual, coordenada_atual) in enumerate(histogramas_atual, start=1):
             menor_distancia = float('inf')
-            histograma_semelhante = None 
+            histograma_semelhante = None
             coordenada_semelhante = None
 
-            for histograma_proximo, coordenada_proximo, id_proximo in histogramas_proximos:
+            for histograma_proximo, coordenada_proximo in histogramas_proximo:
                 distancia_r = distancia_de_hellinger(histograma_atual[0], histograma_proximo[0])
                 distancia_g = distancia_de_hellinger(histograma_atual[1], histograma_proximo[1])
                 distancia_b = distancia_de_hellinger(histograma_atual[2], histograma_proximo[2])
@@ -140,15 +131,15 @@ def processar_quadros(model, quadros, pasta_quadros, pasta_run):
                     menor_distancia = distancia_media
                     histograma_semelhante = histograma_proximo
                     coordenada_semelhante = coordenada_proximo
-                    id_semelhante=id_atual
 
             # Salvar histogramas
-            salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelhante, id_atual, id_semelhante, numero_quadro, pasta_run)
+            salva_histograma_atual_e_seu_semelhante(histograma_atual, histograma_semelhante, numero_veiculo, numero_quadro, pasta_run)
+
 
             # Desenhar detecções e numerar os veículos
-            enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(img_atual, img_proximo, coordenada_atual, coordenada_semelhante, id_atual, id_semelhante)
-
-            histogramas_atuais = histogramas_proximos
+            enumera_veiculo_atual_e_seu_semelhante_com_o_mesmo_numero(
+                img_atual, img_proximo, coordenada_atual, coordenada_semelhante, numero_veiculo, pasta_run
+            )
 
         # Salvar o quadro atual com as detecções realizadas
         salva_quadro_atual_com_deteccoes_realizadas(img_atual, numero_quadro, pasta_run)
